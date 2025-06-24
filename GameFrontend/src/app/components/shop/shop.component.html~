@@ -1,0 +1,95 @@
+<div class="shop-container">
+    <div class="shop-header">
+        <h2>🏪 Merchant's Shop</h2>
+        <div *ngIf="currentPlayer" class="player-gold">
+            <span class="gold-icon">💰</span>
+            <span class="gold-amount">{{ currentPlayer.gold }}</span>
+        </div>
+        <button class="refresh-shop-btn" (click)="refreshShop()" [disabled]="!currentPlayer || currentPlayer.gold < 20 || loading">
+            🔄 Refresh Shop (💰20)
+        </button>
+    </div>
+
+    <div *ngIf="message" class="message" [class.error]="message.includes('Failed') || message.includes('Not enough')">
+        {{ message }}
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading shop items...
+    </div>
+
+    <div *ngIf="!loading && shopItems.length === 0" class="no-items">
+        No items available in the shop right now.
+    </div>
+
+    <div *ngIf="!loading && shopItems.length > 0" class="shop-items">
+        <div class="items-grid">
+            <div
+                *ngFor="let item of shopItems"
+                class="shop-item"
+                [class]="getItemTypeClass(item)">
+
+                <div class="item-header">
+                    <h3 class="item-name">{{ item.name }}</h3>
+                    <span class="item-type">{{ item.type }}</span>
+                </div>
+
+                <div class="item-description">
+                    {{ item.description }}
+                </div>
+
+                <div class="item-stats">
+                    <div *ngIf="item.minDamage > 0 && item.maxDamage > 0" class="stat">
+                        <span class="stat-label">DMG:</span>
+                        <span class="stat-value">{{ item.minDamage }}-{{ item.maxDamage }}</span>
+                    </div>
+                    <div *ngIf="item.armor > 0" class="stat">
+                        <span class="stat-label">ARMOR:</span>
+                        <span class="stat-value">{{ item.armor }}</span>
+                    </div>
+                    <div *ngIf="item.strengthBonus > 0" class="stat">
+                        <span class="stat-label">STR:</span>
+                        <span class="stat-value">+{{ item.strengthBonus }}</span>
+                    </div>
+                    <div *ngIf="item.dexterityBonus > 0" class="stat">
+                        <span class="stat-label">DEX:</span>
+                        <span class="stat-value">+{{ item.dexterityBonus }}</span>
+                    </div>
+                    <div *ngIf="item.intelligenceBonus > 0" class="stat">
+                        <span class="stat-label">INT:</span>
+                        <span class="stat-value">+{{ item.intelligenceBonus }}</span>
+                    </div>
+                    <div *ngIf="item.constitutionBonus > 0" class="stat">
+                        <span class="stat-label">CON:</span>
+                        <span class="stat-value">+{{ item.constitutionBonus }}</span>
+                    </div>
+                    <div *ngIf="item.luckBonus > 0" class="stat">
+                        <span class="stat-label">LUCK:</span>
+                        <span class="stat-value">+{{ item.luckBonus }}</span>
+                    </div>
+                </div>
+
+                <div class="item-footer">
+                    <div class="item-level">Level {{ item.level }}</div>
+                    <div class="item-price">
+                        <span class="gold-icon">💰</span>
+                        <span class="price-amount">{{ item.value }}</span>
+                    </div>
+                </div>
+
+                <button
+                    class="buy-button"
+                    [disabled]="!currentPlayer || currentPlayer.gold < item.value || loading"
+                    (click)="buyItem(item)">
+                    <span *ngIf="!currentPlayer">No Player</span>
+                    <span *ngIf="currentPlayer && currentPlayer.gold < item.value">Not Enough Gold</span>
+                    <span *ngIf="currentPlayer && currentPlayer.gold >= item.value">Buy Item</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="shop-info">
+        <p>💡 Shop items are randomly generated and refresh when you make a purchase!</p>
+    </div>
+</div>

@@ -1,0 +1,334 @@
+﻿<div class="inventory-container">
+    <div class="inventory-header">
+        <h2>👤 Character Stats & Inventory</h2>
+        <div *ngIf="currentPlayer" class="player-gold">
+            <span class="gold-icon">💰</span>
+            <span class="gold-amount">{{ currentPlayer.gold }}</span>
+        </div>
+    </div>
+
+    <div *ngIf="message" class="message" [class.error]="message.includes('Failed')">
+        {{ message }}
+    </div>
+
+    <div *ngIf="!currentPlayer" class="no-player">
+        <p>No player selected.</p>
+    </div>
+
+    <div *ngIf="currentPlayer" class="inventory-content">
+        <!-- Column 1: Player Stats Section -->
+        <div class="stats-section">
+            <h3>📊 Character Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-icon">⚔️</span>
+                        <span class="stat-name">Strength</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="base-stat">{{ currentPlayer.strength }}</span>
+                        <span *ngIf="getTotalStatBonus('strength') > 0" class="stat-bonus">+{{ getTotalStatBonus('strength') }}</span>
+                        <span class="total-stat">= {{ getEffectiveStat('strength') }}</span>
+                    </div>
+                    <div *ngIf="currentPlayer.class === 1" class="combat-stat">
+                        <span class="combat-label">Damage:</span>
+                        <span class="combat-value">{{ getWeaponDamage() }}</span>
+                    </div>
+                    <div *ngIf="currentPlayer.class !== 1" class="combat-stat">
+                        <span class="combat-label">vs Warriors:</span>
+                        <span class="combat-value">+{{ getEffectiveStat('strength') }} Armor</span>
+                    </div>
+                    <div class="stat-upgrades">
+                        <button (click)="buyStatUpgrade('Strength', $event)" [disabled]="currentPlayer.gold < getUpgradePrice('strength')">Buy +1 (💰{{ getUpgradePrice('strength') }})</button>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-icon">🏃</span>
+                        <span class="stat-name">Dexterity</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="base-stat">{{ currentPlayer.dexterity }}</span>
+                        <span *ngIf="getTotalStatBonus('dexterity') > 0" class="stat-bonus">+{{ getTotalStatBonus('dexterity') }}</span>
+                        <span class="total-stat">= {{ getEffectiveStat('dexterity') }}</span>
+                    </div>
+                    <div *ngIf="currentPlayer.class === 3" class="combat-stat">
+                        <span class="combat-label">Damage:</span>
+                        <span class="combat-value">{{ getWeaponDamage() }}</span>
+                    </div>
+                    <div *ngIf="currentPlayer.class !== 3" class="combat-stat">
+                        <span class="combat-label">vs Scouts:</span>
+                        <span class="combat-value">+{{ getEffectiveStat('dexterity') }} Armor</span>
+                    </div>
+                    <div class="stat-upgrades">
+                        <button (click)="buyStatUpgrade('Dexterity', $event)" [disabled]="currentPlayer.gold < getUpgradePrice('dexterity')">Buy +1 (💰{{ getUpgradePrice('dexterity') }})</button>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-icon">🧠</span>
+                        <span class="stat-name">Intelligence</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="base-stat">{{ currentPlayer.intelligence }}</span>
+                        <span *ngIf="getTotalStatBonus('intelligence') > 0" class="stat-bonus">+{{ getTotalStatBonus('intelligence') }}</span>
+                        <span class="total-stat">= {{ getEffectiveStat('intelligence') }}</span>
+                    </div>
+                    <div *ngIf="currentPlayer.class === 2" class="combat-stat">
+                        <span class="combat-label">Damage:</span>
+                        <span class="combat-value">{{ getWeaponDamage() }}</span>
+                    </div>
+                    <div *ngIf="currentPlayer.class !== 2" class="combat-stat">
+                        <span class="combat-label">vs Mages:</span>
+                        <span class="combat-value">+{{ getEffectiveStat('intelligence') }} Armor</span>
+                    </div>
+                    <div class="stat-upgrades">
+                        <button (click)="buyStatUpgrade('Intelligence', $event)" [disabled]="currentPlayer.gold < getUpgradePrice('intelligence')">Buy +1 (💰{{ getUpgradePrice('intelligence') }})</button>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-name">Constitution</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="base-stat">{{ currentPlayer.constitution }}</span>
+                        <span *ngIf="getTotalStatBonus('constitution') > 0" class="stat-bonus">+{{ getTotalStatBonus('constitution') }}</span>
+                        <span class="total-stat">= {{ getEffectiveStat('constitution') }}</span>
+                    </div>
+                    <div class="combat-stat">
+                        <span class="combat-label">Hit Points:</span>
+                        <span class="combat-value">{{ getHitPoints() }}</span>
+                    </div>
+                    <div class="stat-upgrades">
+                        <button (click)="buyStatUpgrade('Constitution', $event)" [disabled]="currentPlayer.gold < getUpgradePrice('constitution')">Buy +1 (💰{{ getUpgradePrice('constitution') }})</button>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-icon">🍀</span>
+                        <span class="stat-name">Luck</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="base-stat">{{ currentPlayer.luck }}</span>
+                        <span *ngIf="getTotalStatBonus('luck') > 0" class="stat-bonus">+{{ getTotalStatBonus('luck') }}</span>
+                        <span class="total-stat">= {{ getEffectiveStat('luck') }}</span>
+                    </div>
+                    <div class="combat-stat">
+                        <span class="combat-label">Critical Hit:</span>
+                        <span class="combat-value">{{ getCriticalHitChance() }}%</span>
+                    </div>
+                    <div class="stat-upgrades">
+                        <button (click)="buyStatUpgrade('Luck', $event)" [disabled]="currentPlayer.gold < getUpgradePrice('luck')">Buy +1 (💰{{ getUpgradePrice('luck') }})</button>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-icon">🛡️</span>
+                        <span class="stat-name">Armor</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="total-stat">{{ getTotalArmor() }}</span>
+                    </div>
+                    <div class="combat-stat">
+                        <span class="combat-label">Damage Reduction:</span>
+                        <span class="combat-value">{{ getDamageReduction() }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="character-info">
+                <div class="info-item">
+                    <span class="info-label">Level:</span>
+                    <span class="info-value">{{ currentPlayer.level }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Experience:</span>
+                    <span class="info-value">{{ currentPlayer.experience }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Class:</span>
+                    <span class="info-value">{{ currentPlayer.class === 1 ? 'Warrior' : currentPlayer.class === 2 ? 'Mage' : 'Scout' }}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Column 2: Equipment and Inventory -->
+        <div class="right-panel">
+            <div class="equipment-section">
+                <h3>⚔️ Equipment</h3>
+                <div class="equipment-grid">
+                    <div class="equipment-slot weapon-slot">
+                        <div class="slot-label">Weapon</div>
+                        <div class="slot-content" *ngIf="getEquippedWeapon() as weapon; else emptyWeaponSlot">
+                            <div class="equipped-item">
+                                <div class="item-name">{{ weapon.name }}</div>
+                                <div class="item-damage" *ngIf="weapon.minDamage && weapon.maxDamage">
+                                    DMG: {{ weapon.minDamage }}-{{ weapon.maxDamage }}
+                                </div>
+                                <div class="item-bonuses">
+                                    <span *ngIf="weapon.strengthBonus > 0">STR +{{ weapon.strengthBonus }}</span>
+                                    <span *ngIf="weapon.dexterityBonus > 0">DEX +{{ weapon.dexterityBonus }}</span>
+                                    <span *ngIf="weapon.intelligenceBonus > 0">INT +{{ weapon.intelligenceBonus }}</span>
+                                    <span *ngIf="weapon.constitutionBonus > 0">CON +{{ weapon.constitutionBonus }}</span>
+                                    <span *ngIf="weapon.luckBonus > 0">LUCK +{{ weapon.luckBonus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #emptyWeaponSlot>
+                            <div class="empty-slot">No Weapon</div>
+                        </ng-template>
+                    </div>
+
+                    <div class="equipment-slot helmet-slot">
+                        <div class="slot-label">Helmet</div>
+                        <div class="slot-content" *ngIf="getEquippedItem(ItemType.Helmet) as helmet; else emptyHelmetSlot">
+                            <div class="equipped-item" (click)="unequipItem(helmet)" (keydown.enter)="unequipItem(helmet)" (keydown.space)="unequipItem(helmet)" tabindex="0" title="Click to unequip">
+                                <div class="item-name">{{ helmet.name }}</div>
+                                <div class="item-armor" *ngIf="helmet.armor > 0">
+                                    ARMOR: {{ helmet.armor }}
+                                </div>
+                                <div class="item-bonuses">
+                                    <span *ngIf="helmet.strengthBonus > 0">STR +{{ helmet.strengthBonus }}</span>
+                                    <span *ngIf="helmet.dexterityBonus > 0">DEX +{{ helmet.dexterityBonus }}</span>
+                                    <span *ngIf="helmet.intelligenceBonus > 0">INT +{{ helmet.intelligenceBonus }}</span>
+                                    <span *ngIf="helmet.constitutionBonus > 0">CON +{{ helmet.constitutionBonus }}</span>
+                                    <span *ngIf="helmet.luckBonus > 0">LUCK +{{ helmet.luckBonus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #emptyHelmetSlot>
+                            <div class="empty-slot">No Helmet</div>
+                        </ng-template>
+                    </div>
+
+                    <div class="equipment-slot armor-slot">
+                        <div class="slot-label">Armor</div>
+                        <div class="slot-content" *ngIf="getEquippedItem(ItemType.Armor) as armor; else emptyArmorSlot">
+                            <div class="equipped-item" (click)="unequipItem(armor)" (keydown.enter)="unequipItem(armor)" (keydown.space)="unequipItem(armor)" tabindex="0" title="Click to unequip">
+                                <div class="item-name">{{ armor.name }}</div>
+                                <div class="item-armor" *ngIf="armor.armor > 0">
+                                    ARMOR: {{ armor.armor }}
+                                </div>
+                                <div class="item-bonuses">
+                                    <span *ngIf="armor.strengthBonus > 0">STR +{{ armor.strengthBonus }}</span>
+                                    <span *ngIf="armor.dexterityBonus > 0">DEX +{{ armor.dexterityBonus }}</span>
+                                    <span *ngIf="armor.intelligenceBonus > 0">INT +{{ armor.intelligenceBonus }}</span>
+                                    <span *ngIf="armor.constitutionBonus > 0">CON +{{ armor.constitutionBonus }}</span>
+                                    <span *ngIf="armor.luckBonus > 0">LUCK +{{ armor.luckBonus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #emptyArmorSlot>
+                            <div class="empty-slot">No Armor</div>
+                        </ng-template>
+                    </div>
+
+                    <div class="equipment-slot gloves-slot">
+                        <div class="slot-label">Gloves</div>
+                        <div class="slot-content" *ngIf="getEquippedItem(ItemType.Gloves) as gloves; else emptyGlovesSlot">
+                            <div class="equipped-item" (click)="unequipItem(gloves)" (keydown.enter)="unequipItem(gloves)" (keydown.space)="unequipItem(gloves)" tabindex="0" title="Click to unequip">
+                                <div class="item-name">{{ gloves.name }}</div>
+                                <div class="item-armor" *ngIf="gloves.armor > 0">
+                                    ARMOR: {{ gloves.armor }}
+                                </div>
+                                <div class="item-bonuses">
+                                    <span *ngIf="gloves.strengthBonus > 0">STR +{{ gloves.strengthBonus }}</span>
+                                    <span *ngIf="gloves.dexterityBonus > 0">DEX +{{ gloves.dexterityBonus }}</span>
+                                    <span *ngIf="gloves.intelligenceBonus > 0">INT +{{ gloves.intelligenceBonus }}</span>
+                                    <span *ngIf="gloves.constitutionBonus > 0">CON +{{ gloves.constitutionBonus }}</span>
+                                    <span *ngIf="gloves.luckBonus > 0">LUCK +{{ gloves.luckBonus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #emptyGlovesSlot>
+                            <div class="empty-slot">No Gloves</div>
+                        </ng-template>
+                    </div>
+
+                    <div class="equipment-slot boots-slot">
+                        <div class="slot-label">Boots</div>
+                        <div class="slot-content" *ngIf="getEquippedItem(ItemType.Boots) as boots; else emptyBootsSlot">
+                            <div class="equipped-item" (click)="unequipItem(boots)" (keydown.enter)="unequipItem(boots)" (keydown.space)="unequipItem(boots)" tabindex="0" title="Click to unequip">
+                                <div class="item-name">{{ boots.name }}</div>
+                                <div class="item-armor" *ngIf="boots.armor > 0">
+                                    ARMOR: {{ boots.armor }}
+                                </div>
+                                <div class="item-bonuses">
+                                    <span *ngIf="boots.strengthBonus > 0">STR +{{ boots.strengthBonus }}</span>
+                                    <span *ngIf="boots.dexterityBonus > 0">DEX +{{ boots.dexterityBonus }}</span>
+                                    <span *ngIf="boots.intelligenceBonus > 0">INT +{{ boots.intelligenceBonus }}</span>
+                                    <span *ngIf="boots.constitutionBonus > 0">CON +{{ boots.constitutionBonus }}</span>
+                                    <span *ngIf="boots.luckBonus > 0">LUCK +{{ boots.luckBonus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #emptyBootsSlot>
+                            <div class="empty-slot">No Boots</div>
+                        </ng-template>
+                    </div>
+
+                    <div class="equipment-slot shield-slot">
+                        <div class="slot-label">Shield</div>
+                        <div class="slot-content" *ngIf="getEquippedItem(ItemType.Shield) as shield; else emptyShieldSlot">
+                            <div class="equipped-item" (click)="unequipItem(shield)" (keydown.enter)="unequipItem(shield)" (keydown.space)="unequipItem(shield)" tabindex="0" title="Click to unequip">
+                                <div class="item-name">{{ shield.name }}</div>
+                                <div class="item-armor" *ngIf="shield.armor > 0">
+                                    ARMOR: {{ shield.armor }}
+                                </div>
+                                <div class="item-bonuses">
+                                    <span *ngIf="shield.strengthBonus > 0">STR +{{ shield.strengthBonus }}</span>
+                                    <span *ngIf="shield.dexterityBonus > 0">DEX +{{ shield.dexterityBonus }}</span>
+                                    <span *ngIf="shield.intelligenceBonus > 0">INT +{{ shield.intelligenceBonus }}</span>
+                                    <span *ngIf="shield.constitutionBonus > 0">CON +{{ shield.constitutionBonus }}</span>
+                                    <span *ngIf="shield.luckBonus > 0">LUCK +{{ shield.luckBonus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #emptyShieldSlot>
+                            <div class="empty-slot">No Shield</div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="inventory-section">
+                <h3>🎒 Inventory</h3>
+                
+                <div *ngIf="loading" class="loading">
+                    Loading inventory...
+                </div>
+
+                <div *ngIf="!loading && playerItems.length === 0" class="empty-inventory">
+                    <p>Your inventory is empty.</p>
+                    <p>Visit the shop to buy some items!</p>
+                </div>
+
+                <div *ngIf="!loading && playerItems.length > 0" class="inventory-grid">
+                    <div 
+                        *ngFor="let item of unequippedItems" 
+                        class="inventory-item"
+                        [class]="getItemTypeClass(item)">
+                        <app-item-card [item]="item"></app-item-card>
+                        <div class="item-actions">
+                            <button
+                                *ngIf="!item.isEquipped"
+                                class="equip-button"
+                                (click)="equipItem(item)">
+                                Equip
+                            </button>
+                            <button 
+                                class="sell-button"
+                                (click)="sellItem(item)">
+                                Sell ({{ Math.floor(item.value / 2) }})
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

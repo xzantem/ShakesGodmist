@@ -1,0 +1,122 @@
+﻿<div class="game-container">
+    <header class="game-header">
+        <h1>{{ title }}</h1>
+        <div *ngIf="currentUser && currentPlayer" class="player-info">
+            <span>{{ currentUser.username }} - {{ currentPlayer.name }} (Level {{ currentPlayer.level }})</span>
+            <button (click)="logout()" class="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <main class="game-main">
+        <!-- Login Screen -->
+        <div *ngIf="showLogin" class="welcome-screen">
+            <app-login
+                (loginSuccess)="onLoginSuccess()"
+                (showRegister)="showRegisterScreen()">
+            </app-login>
+        </div>
+
+        <!-- Registration Screen -->
+        <div *ngIf="showRegister" class="welcome-screen">
+            <app-register
+                (registrationSuccess)="onRegistrationSuccess()"
+                (showLogin)="showLoginScreen()">
+            </app-register>
+        </div>
+
+        <!-- Character Selection Screen -->
+        <div *ngIf="showCharacterSelect" class="welcome-screen">
+            <app-character-select
+                (characterSelected)="onCharacterSelected($event)"
+                (createNewCharacter)="showCreateCharacter()"
+                (logoutClicked)="logout()">
+            </app-character-select>
+        </div>
+
+        <!-- Character Creation Screen -->
+        <div *ngIf="showCreatePlayer" class="welcome-screen">
+            <app-create-player (playerCreated)="onPlayerCreated($event)"></app-create-player>
+        </div>
+
+        <!-- Game Screen -->
+        <div *ngIf="showGame && currentPlayer" class="game-screen">
+            <div class="game-layout">
+                <div class="left-panel">
+                    <!-- Character Info -->
+                    <div class="character-info">
+                        <div class="character-header">
+                            <h3>{{ currentPlayer.name }}</h3>
+                        </div>
+
+                        <div class="character-class">
+                            <span class="class-badge">{{ getClassName(currentPlayer.class) }}</span>
+                        </div>
+
+                        <div class="character-stats">
+                            <div class="xp-section">
+                                <div class="xp-info">
+                                    <span class="xp-value">{{ currentPlayer.experience }} / {{ getExpRequiredForCurrentLevel() }} XP</span>
+                                </div>
+                                <div class="xp-bar-container">
+                                    <div class="xp-bar">
+                                        <div
+                                            class="xp-fill"
+                                            [style.width.%]="getXpPercentage()">
+                                        </div>
+                                        <span class="xp-bar-level">{{ currentPlayer.level }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="gold-section">
+                                <span class="gold-icon">💰</span>
+                                <span class="gold-amount">{{ currentPlayer.gold }} Gold</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="navigation-tabs">
+                        <button
+                            class="nav-btn"
+                            [class.active]="activeTab === 'stats'"
+                            (click)="setActiveTab('stats')">
+                            📦 Inventory
+                        </button>
+                        <button
+                            class="nav-btn"
+                            [class.active]="activeTab === 'quests'"
+                            (click)="setActiveTab('quests')">
+                            📜 Quests
+                        </button>
+                        <button
+                            class="nav-btn"
+                            [class.active]="activeTab === 'shop'"
+                            (click)="setActiveTab('shop')">
+                            🛒 Shop
+                        </button>
+                    </div>
+                </div>
+
+                <div class="center-panel">
+                    <div class="content-area">
+                        <!-- Player Stats & Inventory Tab -->
+                        <div *ngIf="activeTab === 'stats'" class="content-panel">
+                            <app-inventory></app-inventory>
+                        </div>
+
+                        <!-- Quests Tab -->
+                        <div *ngIf="activeTab === 'quests'" class="content-panel">
+                            <app-quest-board></app-quest-board>
+                        </div>
+
+                        <!-- Shop Tab -->
+                        <div *ngIf="activeTab === 'shop'" class="content-panel">
+                            <app-shop></app-shop>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

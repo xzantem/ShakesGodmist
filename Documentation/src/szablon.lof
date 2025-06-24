@@ -1,0 +1,25 @@
+\babel@toc {polish}{}\relax 
+\babel@toc {polish}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Diagram bazy danych}}{12}{figure.3.1}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Diagram przypadków użycia UML}}{13}{figure.4.1}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Test rejestracji użytkownika}}{16}{figure.6.1}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Test logowania użytkownika}}{17}{figure.6.2}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Test danych gracza}}{17}{figure.6.3}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Test zakupu przedmiotu - brak złota}}{18}{figure.6.4}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Test rozpoczęcia misji}}{18}{figure.6.5}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Test zakończenia misji}}{19}{figure.6.6}%
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Test nieautoryzowanego dostępu}}{19}{figure.6.7}%
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Test rejestracji użytkownika - frontend}}{20}{figure.6.8}%
+\contentsline {figure}{\numberline {6.9}{\ignorespaces Test logowania użytkownika - frontend}}{21}{figure.6.9}%
+\contentsline {figure}{\numberline {6.10}{\ignorespaces Test ekwipunku gracza}}{22}{figure.6.10}%
+\contentsline {figure}{\numberline {6.11}{\ignorespaces Test zakupu przedmiotu - frontend}}{23}{figure.6.11}%
+\contentsline {figure}{\numberline {6.12}{\ignorespaces Test rozpoczęcia misji}}{23}{figure.6.12}%
+\contentsline {figure}{\numberline {6.13}{\ignorespaces Test zakończenia misji}}{24}{figure.6.13}%
+\contentsline {figure}{\numberline {6.14}{\ignorespaces Test ulepszenia statystyk}}{24}{figure.6.14}%
+\addvspace {10\p@ }

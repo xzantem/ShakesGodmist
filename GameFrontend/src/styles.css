@@ -1,0 +1,159 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #ecf0f1;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(52, 73, 94, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(243, 156, 18, 0.6);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(243, 156, 18, 0.8);
+}
+
+/* Form elements styling for dark theme */
+input, select, textarea, button {
+    font-family: inherit;
+}
+
+input, select, textarea {
+    background: rgba(52, 73, 94, 0.8);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #ecf0f1;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #f39c12;
+    box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2);
+}
+
+input::placeholder, textarea::placeholder {
+    color: #bdc3c7;
+}
+
+/* Button styling for dark theme */
+button {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+button:disabled {
+    background: #7f8c8d;
+    color: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Link styling for dark theme */
+a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+/* Card styling for dark theme */
+.card {
+    background: rgba(44, 62, 80, 0.9);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+    color: #ecf0f1;
+}
+
+/* Text colors for dark theme */
+.text-primary {
+    color: #f39c12;
+}
+
+.text-secondary {
+    color: #bdc3c7;
+}
+
+.text-success {
+    color: #2ecc71;
+}
+
+.text-danger {
+    color: #e74c3c;
+}
+
+.text-info {
+    color: #3498db;
+}
+
+/* Background colors for dark theme */
+.bg-primary {
+    background: rgba(44, 62, 80, 0.9);
+}
+
+.bg-secondary {
+    background: rgba(52, 73, 94, 0.8);
+}
+
+.bg-success {
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.bg-danger {
+    background: rgba(231, 76, 60, 0.2);
+}
+
+.bg-info {
+    background: rgba(52, 152, 219, 0.2);
+}
+
+/* Utility classes for dark theme */
+.border-gold {
+    border-color: rgba(243, 156, 18, 0.3);
+}
+
+.shadow-dark {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.shadow-gold {
+    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);
+}

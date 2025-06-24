@@ -1,0 +1,249 @@
+﻿import { Component, OnInit } from '@angular/core';
+import { Item, ItemType } from '../../models/game.models';
+import { ApiService } from '../../services/api.service';
+import { GameService } from '../../services/game.service';
+import {CommonModule} from '@angular/common';
+import { ItemCardComponent } from '../item-card/item-card.component';
+
+@Component({
+    selector: 'app-inventory',
+    templateUrl: './inventory.component.html',
+    standalone: true,
+    styleUrls: ['./inventory.component.css'],
+    imports: [
+      CommonModule,
+      ItemCardComponent
+    ]
+})
+export class InventoryComponent implements OnInit {
+    playerItems: Item[] = [];
+    currentPlayer: any;
+    loading = false;
+    message = '';
+    Math = Math; // Make Math available in template
+    public ItemType = ItemType; // Expose enum to template
+
+    constructor(
+        private apiService: ApiService,
+        private gameService: GameService
+    ) {}
+
+    ngOnInit(): void {
+        this.gameService.currentPlayer$.subscribe(player => {
+            this.currentPlayer = player;
+            if (player) {
+                this.loadPlayerItems();
+            }
+        });
+    }
+
+    private loadPlayerItems(): void {
+        if (this.currentPlayer) {
+            this.loading = true;
+            this.apiService.getPlayerItems(this.currentPlayer.id).subscribe({
+                next: (items) => {
+                    this.playerItems = items;
+                    this.loading = false;
+                },
+                error: (error) => {
+                    console.error('Failed to load player items:', error);
+                    this.message = 'Failed to load inventory';
+                    this.loading = false;
+                }
+            });
+        }
+    }
+
+    equipItem(item: Item): void {
+        this.loading = true;
+        this.apiService.equipItem(item.id).subscribe({
+            next: (updatedPlayer) => {
+                this.gameService.setCurrentPlayer(updatedPlayer);
+                this.loadPlayerItems();
+                this.message = `Equipped ${item.name}!`;
+                this.loading = false;
+            },
+            error: (error) => {
+                console.error('Failed to equip item:', error);
+                this.message = 'Failed to equip item';
+                this.loading = false;
+            }
+        });
+    }
+
+    sellItem(item: Item): void {
+        if (confirm(`Are you sure you want to sell ${item.name} for ${Math.floor(item.value / 2)} gold?`)) {
+            this.loading = true;
+            this.apiService.sellItem(item.id).subscribe({
+                next: (updatedPlayer) => {
+                    this.gameService.setCurrentPlayer(updatedPlayer);
+                    this.loadPlayerItems();
+                    this.message = `Sold ${item.name} for ${Math.floor(item.value / 2)} gold!`;
+                    this.loading = false;
+                },
+                error: (error) => {
+                    console.error('Failed to sell item:', error);
+                    this.message = 'Failed to sell item';
+                    this.loading = false;
+                }
+            });
+        }
+    }
+
+    unequipItem(item: Item): void {
+        console.log('Unequip clicked', item);
+        this.loading = true;
+        this.apiService.equipItem(item.id).subscribe({
+            next: (updatedPlayer) => {
+                this.gameService.setCurrentPlayer(updatedPlayer);
+                this.loadPlayerItems();
+                this.message = `Unequipped ${item.name}!`;
+                this.loading = false;
+            },
+            error: (error) => {
+                console.error('Failed to unequip item:', error);
+                this.message = 'Failed to unequip item';
+                this.loading = false;
+            }
+        });
+    }
+
+    getItemTypeString(type: ItemType): string {
+        switch (type) {
+            case ItemType.Weapon: return 'Weapon';
+            case ItemType.Helmet: return 'Helmet';
+            case ItemType.Armor: return 'Armor';
+            case ItemType.Gloves: return 'Gloves';
+            case ItemType.Boots: return 'Boots';
+            case ItemType.Shield: return 'Shield';
+            case ItemType.Amulet: return 'Amulet';
+            case ItemType.Ring: return 'Ring';
+            default: return 'Unknown';
+        }
+    }
+
+    getItemTypeClass(item: Item): string {
+        const itemType = String(item.type).toLowerCase();
+        switch (itemType) {
+            case 'weapon': return 'item-weapon';
+            case 'armor': return 'item-armor';
+            case 'helmet': return 'item-helmet';
+            case 'gloves': return 'item-gloves';
+            case 'boots': return 'item-boots';
+            case 'shield': return 'item-shield';
+            case 'amulet': return 'item-amulet';
+            case 'ring': return 'item-ring';
+            default: return 'item-other';
+        }
+    }
+
+    getTotalStatBonus(stat: string): number {
+        return this.playerItems
+            .filter(item => item.isEquipped)
+            .reduce((total, item) => {
+                switch (stat) {
+                    case 'strength': return total + item.strengthBonus;
+                    case 'dexterity': return total + item.dexterityBonus;
+                    case 'intelligence': return total + item.intelligenceBonus;
+                    case 'constitution': return total + item.constitutionBonus;
+                    case 'luck': return total + item.luckBonus;
+                    default: return total;
+                }
+            }, 0);
+    }
+
+    getEffectiveStat(stat: string): number {
+        if (!this.currentPlayer) return 0;
+        const baseStat = this.currentPlayer[stat] || 0;
+        //const upgrades = this.currentPlayer[stat + 'Upgrades'] || 0;
+        const bonus = this.getTotalStatBonus(stat);
+        return baseStat + bonus;
+    }
+
+    getWeaponDamage(): string {
+        const weapon = this.playerItems.find(item => item.type === ItemType.Weapon && item.isEquipped);
+        if (!weapon || weapon.minDamage === 0 || weapon.maxDamage === 0) {
+            return '0-0';
+        }
+
+        // Get the primary stat for damage calculation based on class
+        let primaryStat = 0;
+        switch (this.currentPlayer.class) {
+            case 1: // Warrior - uses Strength
+                primaryStat = this.getEffectiveStat('strength');
+                break;
+            case 2: // Mage - uses Intelligence
+                primaryStat = this.getEffectiveStat('intelligence');
+                break;
+            case 3: // Scout - uses Dexterity
+                primaryStat = this.getEffectiveStat('dexterity');
+                break;
+        }
+
+        const damageMultiplier = 1 + (primaryStat * 0.1);
+        const minDamage = Math.floor(weapon.minDamage * damageMultiplier);
+        const maxDamage = Math.floor(weapon.maxDamage * damageMultiplier);
+
+        return `${minDamage}-${maxDamage}`;
+    }
+
+    getHitPoints(): number {
+        const constitution = this.getEffectiveStat('constitution');
+        return constitution * 5 * (this.currentPlayer.level + 1);
+    }
+
+    getCriticalHitChance(): number {
+        const luck = this.getEffectiveStat('luck');
+        const enemyLevel = this.currentPlayer.level; // Assuming enemy level = player level for now
+        const critChance = (luck * 5) / (2 * enemyLevel);
+        return Math.min(Math.round(critChance), 50); // Max 50%
+    }
+
+    getTotalArmor(): number {
+        return this.playerItems
+            .filter(item => item.isEquipped)
+            .reduce((total, item) => total + item.armor, 0);
+    }
+
+    getDamageReduction(): number {
+        const totalArmor = this.getTotalArmor();
+        const enemyLevel = this.currentPlayer.level || 1;
+        const reduction = (totalArmor / enemyLevel);
+        return Math.min(Math.round(reduction), 50); // Cap at 50%
+    }
+
+    getEquippedWeapon(): Item | undefined {
+        return this.playerItems.find(item => item.type === ItemType.Weapon && item.isEquipped);
+    }
+
+    getEquippedItem(itemType: ItemType): Item | undefined {
+        return this.playerItems.find(item => item.type === itemType && item.isEquipped);
+    }
+
+    get unequippedItems(): Item[] {
+        return this.playerItems.filter(i => !i.isEquipped);
+    }
+
+    buyStatUpgrade(stat: string, event?: Event) {
+        console.log('Buying stat upgrade for', stat);
+        if (event) {
+            event.preventDefault();
+        }
+        if (!this.currentPlayer) return;
+        this.apiService.buyStatUpgrade(this.currentPlayer.id, stat).subscribe({
+            next: (player) => {
+                this.currentPlayer = player;
+                this.message = `Upgraded ${stat}!`;
+            },
+            error: (err) => {
+                this.message = err?.error || `Failed to upgrade ${stat}`;
+            }
+        });
+    }
+
+    getUpgradePrice(stat: string): number {
+        if (!this.currentPlayer) return 0;
+        const upgrades = this.currentPlayer[stat + 'Upgrades'] || 0;
+        return Math.round(10 * Math.pow(1.2, upgrades));
+    }
+}

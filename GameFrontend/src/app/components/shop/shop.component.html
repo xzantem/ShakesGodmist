@@ -1,0 +1,49 @@
+<div class="shop-container">
+    <div class="shop-header">
+        <h2>🏪 Merchant's Shop</h2>
+        <div *ngIf="currentPlayer" class="player-gold">
+            <span class="gold-icon">💰</span>
+            <span class="gold-amount">{{ currentPlayer.gold }}</span>
+        </div>
+        <button class="refresh-shop-btn" (click)="refreshShop()" [disabled]="!currentPlayer || currentPlayer.gold < 20 || loading">
+            🔄 Refresh Shop (💰20)
+        </button>
+    </div>
+
+    <div *ngIf="message" class="message" [class.error]="message.includes('Failed') || message.includes('Not enough')">
+        {{ message }}
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading shop items...
+    </div>
+
+    <div *ngIf="!loading && shopItems.length === 0" class="no-items">
+        No items available in the shop right now.
+    </div>
+
+    <div *ngIf="!loading && shopItems.length > 0" class="shop-items">
+        <div class="items-grid">
+            <div
+                *ngFor="let item of shopItems"
+                class="shop-item"
+                [class]="getItemTypeClass(item)">
+
+                <app-item-card [item]="item"></app-item-card>
+
+                <button
+                    class="buy-button"
+                    [disabled]="!currentPlayer || currentPlayer.gold < item.value || loading"
+                    (click)="buyItem(item)">
+                    <span *ngIf="!currentPlayer">No Player</span>
+                    <span *ngIf="currentPlayer && currentPlayer.gold < item.value">Not Enough Gold</span>
+                    <span *ngIf="currentPlayer && currentPlayer.gold >= item.value">Buy Item</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="shop-info">
+        <p>💡 Shop items are randomly generated and refresh when you make a purchase!</p>
+    </div>
+</div>

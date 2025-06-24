@@ -1,0 +1,49 @@
+﻿<div class="create-player-container">
+    <div class="create-player-card">
+        <h2>Create Your Character</h2>
+
+        <form [formGroup]="createPlayerForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="name">Character Name:</label>
+                <input
+                        type="text"
+                        id="name"
+                        formControlName="name"
+                        placeholder="Enter character name"
+                        class="form-control">
+                <div *ngIf="createPlayerForm.get('name')?.invalid && createPlayerForm.get('name')?.touched"
+                     class="error-message">
+                    Name must be between 3-20 characters
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Choose Your Class:</label>
+                <div class="class-selection">
+                    <div *ngFor="let playerClass of playerClasses"
+                         class="class-option"
+                         [class.selected]="createPlayerForm.get('class')?.value === playerClass.value">
+                        <input
+                                type="radio"
+                                [value]="playerClass.value"
+                                formControlName="class"
+                                [id]="'class-' + playerClass.value">
+                        <label [for]="'class-' + playerClass.value" class="class-label">
+                            <div class="class-name">{{ playerClass.name }}</div>
+                            <div class="class-description">{{ playerClass.description }}</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="error" class="error-message">{{ error }}</div>
+
+            <button
+                    type="submit"
+                    [disabled]="createPlayerForm.invalid || isLoading"
+                    class="create-btn">
+                {{ isLoading ? 'Creating...' : 'Create Character' }}
+            </button>
+        </form>
+    </div>
+</div>

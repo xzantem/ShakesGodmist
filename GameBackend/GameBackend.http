@@ -1,0 +1,6 @@
+@GameBackend_HostAddress = http://localhost:4200
+
+GET {{GameBackend_HostAddress}}/ShakesGodmist/
+Accept: application/json
+
+###

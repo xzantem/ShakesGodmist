@@ -1,0 +1,68 @@
+% ********** Rozdział 1 **********
+\chapter{Opis zastosowanego stosu technologicznego i narzędzi}
+
+Projekt "Shakes \& Godmist" wykorzystuje nowoczesny stos technologiczny, który obejmuje zarówno technologie backendowe, jak i frontendowe oraz narzędzia wspierające proces wytwarzania oprogramowania.
+
+\section{Języki programowania}
+\begin{itemize}
+    \item \textbf{C\#} -- główny język backendu, wykorzystywany w ASP.NET Core.
+    \item \textbf{TypeScript} -- główny język frontendowy, wykorzystywany w Angularze.
+    \item \textbf{SQL} -- do obsługi bazy danych PostgreSQL.
+    \item \textbf{HTML, CSS} -- do budowy interfejsu użytkownika.
+\end{itemize}
+
+\section{Frameworki i biblioteki}
+\begin{itemize}
+    \item \textbf{ASP.NET Core 9.0} -- framework do budowy REST API, obsługa routingu, autoryzacji, walidacji i logiki biznesowej.
+    \item \textbf{Entity Framework Core 9.0.6} -- ORM do mapowania obiektowo-relacyjnego i migracji bazy danych.
+    \item \textbf{Angular 20.x} -- framework frontendowy do budowy SPA, obsługa routingu, komponentów, serwisów i reaktywności.
+    \item \textbf{RxJS 7.8.0} -- biblioteka do reaktywnego zarządzania stanem i asynchronicznością w Angularze.
+    \item \textbf{Swagger / Swashbuckle 9.0.1} -- automatyczna dokumentacja i testowanie API.
+    \item \textbf{JWT (JSON Web Token)} -- mechanizm autoryzacji i uwierzytelniania użytkowników.
+    \item \textbf{PostgreSQL} -- relacyjna baza danych, przechowująca dane graczy, przedmiotów, misji itp.
+    \item \textbf{Npgsql 9.0.3} -- sterownik .NET do komunikacji z PostgreSQL.
+    \item \textbf{Node.js} -- środowisko uruchomieniowe dla Angular CLI i narzędzi frontendowych.
+    \item \textbf{Angular CLI 20.x} -- narzędzie do generowania, budowania i testowania aplikacji Angular.
+    \item \textbf{TypeScript 5.8.2} -- język programowania dla Angulara.
+    \item \textbf{Zone.js 0.15.0} -- obsługa stref asynchronicznych w Angularze.
+    \item \textbf{Karma, Jasmine} -- narzędzia do testów jednostkowych w Angularze.
+    \item \textbf{Postman} -- narzędzie do testowania i automatyzacji zapytań HTTP do API.
+    \item \textbf{Git} -- system kontroli wersji.
+    \item \textbf{Visual Studio, JetBrains Rider, VS Code} -- środowiska IDE wykorzystywane podczas rozwoju.
+\end{itemize}
+
+\section{Komunikacja frontend-backend}
+Aplikacja korzysta z architektury klient-serwer. Komunikacja odbywa się przez REST API (JSON) na endpointach udostępnianych przez ASP.NET Core. Autoryzacja użytkownika realizowana jest przez tokeny JWT przesyłane w nagłówkach HTTP.
+
+\section{Zarządzanie stanem i bezpieczeństwo}
+\begin{itemize}
+    \item Po stronie backendu: autoryzacja i uwierzytelnianie użytkowników, walidacja danych, logika biznesowa (generowanie misji, walki, nagrody, sklep, ekwipunek).
+    \item Po stronie frontendu: zarządzanie stanem gracza, obsługa sesji, prezentacja danych, obsługa błędów i komunikatów.
+    \item Dane wrażliwe (hasła) są haszowane i nie są przechowywane w postaci jawnej.
+\end{itemize}
+
+\section{Wersje kluczowych technologii}
+\begin{itemize}
+    \item ASP.NET Core: 9.0
+    \item Entity Framework Core: 9.0.6
+    \item Angular: 20.x
+    \item Angular CLI: 20.x
+    \item RxJS: 7.8.0
+    \item TypeScript: 5.8.2
+    \item Zone.js: 0.15.0
+    \item Npgsql: 9.0.3
+    \item Swashbuckle: 9.0.1
+    \item Node.js: 18.x lub wyższy
+    \item PostgreSQL: 14.x lub wyższy (zalecane)
+\end{itemize}
+
+\section{Inne narzędzia i dobre praktyki}
+\begin{itemize}
+    \item \textbf{Swagger UI} -- interaktywna dokumentacja API dostępna pod endpointem /swagger.
+    \item \textbf{Migrations} -- migracje bazy danych zarządzane przez EF Core.
+    \item \textbf{Testy jednostkowe} -- przykładowe testy dla Angulara (Karma/Jasmine).
+    \item \textbf{Linting i formatowanie} -- narzędzia do automatycznego sprawdzania i poprawy stylu kodu.
+    \item \textbf{Responsywny interfejs} -- CSS i Angular zapewniają poprawne wyświetlanie na różnych urządzeniach.
+\end{itemize}
+
+% ********** Koniec rozdziału **********

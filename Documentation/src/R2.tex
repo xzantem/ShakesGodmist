@@ -1,0 +1,100 @@
+﻿% ********** Rozdział 2 **********
+\chapter{Instrukcja uruchomienia aplikacji}
+
+Aby uruchomić projekt "Shakes \& Godmist" na swoim komputerze, należy kroki opisane w tym rozdziale.
+
+\textbf{Uwaga:} Aplikacja została zaprojektowana z myślą o wdrożeniu na serwerze (np. VPS, chmura, serwer dedykowany). Uruchamianie lokalne służy wyłącznie celom deweloperskim i testowym. W środowisku produkcyjnym zaleca się wdrożenie backendu oraz bazy danych na serwerze, a frontend na serwerze WWW lub w usłudze hostingowej.
+
+\section{Wymagania systemowe}
+\begin{itemize}
+    \item \textbf{System operacyjny:} Windows 10/11, Linux lub macOS
+    \item \textbf{.NET SDK:} wersja 9.0 lub wyższa
+    \item \textbf{Node.js:} wersja 18.x lub wyższa
+    \item \textbf{Angular CLI:} wersja 20.x
+    \item \textbf{PostgreSQL:} wersja 14.x lub wyższa
+    \item \textbf{RAM:} minimum 4 GB (zalecane 8 GB)
+    \item \textbf{Dysk:} minimum 500 MB wolnego miejsca
+\end{itemize}
+
+\section{Instalacja zależności}
+\textbf{Backend (.NET):}
+\begin{enumerate}
+    \item Przejdź do katalogu backendu:
+    \begin{verbatim}
+    cd GameBackend
+    \end{verbatim}
+    \item Przywróć zależności NuGet:
+    \begin{verbatim}
+    dotnet restore
+    \end{verbatim}
+\end{enumerate}
+
+\textbf{Frontend (Angular):}
+\begin{enumerate}
+    \item Przejdź do katalogu frontendu:
+    \begin{verbatim}
+    cd GameFrontend
+    \end{verbatim}
+    \item Zainstaluj zależności npm:
+    \begin{verbatim}
+    npm install
+    \end{verbatim}
+\end{enumerate}
+
+\section{Konfiguracja bazy danych}
+\begin{enumerate}
+    \item Zainstaluj i uruchom serwer PostgreSQL.
+    \item Utwórz nową bazę danych, np. o nazwie \texttt{shakesgodmist}.
+    \item Skonfiguruj połączenie w pliku \texttt{appsettings.json} w katalogu GameBackend, np.:
+    \begin{verbatim}
+    "ConnectionStrings": {
+      "DefaultConnection": "Host=localhost;Port=5432;
+      Database=shakesgodmist;
+      Username=postgres;Password=twoje_haslo"
+    }
+    \end{verbatim}
+\end{enumerate}
+
+\section{Uruchamianie backendu}
+\begin{enumerate}
+    \item Wykonaj migracje bazy danych:
+    \begin{verbatim}
+    dotnet ef database update
+    \end{verbatim}
+    \item Uruchom serwer backendu:
+    \begin{verbatim}
+    dotnet run
+    \end{verbatim}
+    \item Domyślnie backend będzie dostępny pod adresem: \url{http://localhost:5166}
+\end{enumerate}
+
+\section{Uruchamianie frontendu}
+\begin{enumerate}
+    \item W nowym terminalu przejdź do katalogu GameFrontend:
+    \begin{verbatim}
+    cd GameFrontend
+    \end{verbatim}
+    \item Uruchom serwer deweloperski Angular:
+    \begin{verbatim}
+    ng serve
+    \end{verbatim}
+    \item Frontend będzie dostępny pod adresem: \url{http://localhost:4200}
+\end{enumerate}
+
+\section{Dostęp do aplikacji}
+\begin{itemize}
+    \item \textbf{Panel użytkownika:} \url{http://localhost:4200}
+    \item \textbf{API backendu:} \url{http://localhost:5166/api}
+    \item \textbf{Swagger (dokumentacja API):} \url{http://localhost:5166/swagger}
+\end{itemize}
+
+\section{Najczęstsze problemy i wskazówki}
+\begin{itemize}
+    \item Jeśli port 5166 lub 4200 jest zajęty, zmień konfigurację w plikach projektu lub uruchom na innym porcie.
+    \item W przypadku błędów połączenia z bazą danych sprawdź poprawność connection string i czy serwer PostgreSQL działa.
+    \item Jeśli pojawią się błędy przy migracjach, upewnij się, że masz zainstalowane narzędzia Entity Framework Core CLI.
+    \item W przypadku problemów z zależnościami npm uruchom \texttt{npm install} ponownie.
+    \item W razie problemów z uprawnieniami uruchom terminal jako administrator.
+\end{itemize}
+
+% ********** Koniec rozdziału **********

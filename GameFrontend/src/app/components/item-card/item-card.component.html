@@ -1,0 +1,22 @@
+<div class="item-card" [ngClass]="'item-' + (item?.type?.toString()?.toLowerCase() || 'other')">
+  <div class="item-header">
+    <span class="item-name">{{ item?.name }}</span>
+    <span class="item-type">{{ getItemTypeString(item?.type) }}</span>
+  </div>
+  <div class="item-description" *ngIf="item?.description">{{ item?.description }}</div>
+  <ng-container *ngIf="item as safeItem">
+    <div class="item-stats">
+      <span *ngIf="safeItem.minDamage > 0 && safeItem.maxDamage > 0">DMG: {{ safeItem.minDamage }}-{{ safeItem.maxDamage }}</span>
+      <span *ngIf="safeItem.armor > 0">ARMOR: {{ safeItem.armor }}</span>
+      <span *ngIf="safeItem.strengthBonus > 0">STR +{{ safeItem.strengthBonus }}</span>
+      <span *ngIf="safeItem.dexterityBonus > 0">DEX +{{ safeItem.dexterityBonus }}</span>
+      <span *ngIf="safeItem.intelligenceBonus > 0">INT +{{ safeItem.intelligenceBonus }}</span>
+      <span *ngIf="safeItem.constitutionBonus > 0">CON +{{ safeItem.constitutionBonus }}</span>
+      <span *ngIf="safeItem.luckBonus > 0">LUCK +{{ safeItem.luckBonus }}</span>
+    </div>
+    <div class="item-footer">
+      <span class="item-level">Lvl {{ safeItem.level }}</span>
+      <span *ngIf="safeItem.value !== undefined && safeItem.value > 0" class="item-value">💰{{ safeItem.value }}</span>
+    </div>
+  </ng-container>
+</div> 

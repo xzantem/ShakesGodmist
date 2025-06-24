@@ -1,0 +1,56 @@
+% **** Szablon pracy magisterskiej, licencjackiej lub inżynierskiej ****
+
+\documentclass[polish,12pt,twoside,a4paper]{report}
+
+\input{style.tex}
+
+%definicja przydatnych poleceń
+\newcommand{\wydzial}{KOLEGIUM INFORMATYKI STOSOWANEJ}
+\newcommand{\kierunek}{Kierunek: INFORMATYKA}
+\newcommand{\specjalnosc}{Specjalność: {Programowanie}}
+\newcommand{\autor}{Patryk Rzegocki}
+\newcommand{\album}{Nr albumu studenta w69840}
+\newcommand{\temat}{Gra fabularna przeglądarkowa RPG}
+\newcommand{\promotor}{mgr inż. Łukasz Piechocki}
+\newcommand{\typpracy}{Praca projektowa Szkolenie techniczne 2}
+\newcommand{\miasto}{Rzeszów}
+\newcommand{\rok}{2025}
+
+\begin{document}
+
+% *************** Włączenie definicji pierwszych stron ***************
+\input{front.tex}
+
+
+% *************** Część główna pracy ***************
+\input{wstep.tex}
+\addcontentsline{toc}{chapter}{Wstęp}
+\newpage
+\input{R1.tex}
+\input{R2.tex}
+\input{R3.tex}
+\input{R4.tex}
+\input{R5.tex}
+\input{R6.tex}
+\input{R7.tex}
+
+% *************** Bibliografia ***************
+\begin{thebibliography}{6}
+\addcontentsline{toc}{chapter}{Bibliografia}
+%dodanie wpisu do spisu bibliograficznego
+
+\bibitem{www-1} Dokumentacja .NET: https://docs.microsoft.com/pl-pl/dotnet/
+\bibitem{www-2} Dokumentacja ASP.NET Core: https://learn.microsoft.com/pl-pl/aspnet/core/
+\bibitem{www-3} Dokumentacja Angular: https://angular.io/docs
+\bibitem{www-4} Dokumentacja PostgreSQL: https://www.postgresql.org/docs/
+\bibitem{www-5} Dokumentacja Entity Framework Core: https://learn.microsoft.com/pl-pl/ef/core/
+\bibitem{www-6} Oficjalna dokumentacja JWT: https://jwt.io/introduction
+\bibitem{www-7} Własne doświadczenia i materiały dydaktyczne
+\end{thebibliography}
+\newpage
+
+% *************** Zakończenie ***************
+\input{back.tex}
+
+\end{document}
+% *************** Koniec pliku szablon.tex ***************

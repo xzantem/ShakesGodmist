@@ -1,0 +1,213 @@
+﻿<div class="quest-board-container">
+    <div class="quest-header">
+        <h2>📜 Quest Board</h2>
+        <div *ngIf="currentPlayer" class="player-info">
+            <span>Level {{ currentPlayer.level }} {{ currentPlayer.name }}</span>
+        </div>
+    </div>
+
+    <!-- Message Display -->
+    <div *ngIf="message" class="message-display">
+        {{ message }}
+    </div>
+
+    <!-- Animated Battle Display -->
+    <div *ngIf="battleState?.battleActive" class="battle-animated-section">
+        <div class="battle-row">
+            <div class="battle-col player-col">
+                <div class="battle-label">{{ currentPlayer?.name || 'Player' }}</div>
+                <div class="battle-hp-bar">
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill" [style.width.%]="((battleState?.battlePlayerHP ?? 0) / (battleState?.battlePlayerMaxHP || 1)) * 100"></div>
+                    </div>
+                    <span class="hp-bar-text">{{ battleState?.battlePlayerHP ?? 0 }} / {{ battleState?.battlePlayerMaxHP ?? 0 }}</span>
+                    <span *ngIf="battleState?.currentBattleAction === 'enemy'" class="damage-number player-damage">-{{ battleState?.lastPlayerDamage }}<span *ngIf="battleState?.lastPlayerCrit"> CRIT!</span></span>
+                </div>
+                <div class="battle-stats-panel" *ngIf="currentPlayer">
+                    <div>Level: {{ currentPlayer.level }}</div>
+                    <div>STR: {{ currentPlayer.strength }}</div>
+                    <div>DEX: {{ currentPlayer.dexterity }}</div>
+                    <div>INT: {{ currentPlayer.intelligence }}</div>
+                    <div>CON: {{ currentPlayer.constitution }}</div>
+                    <div>LUCK: {{ currentPlayer.luck }}</div>
+                </div>
+            </div>
+            <div class="battle-col center-col">
+                <div class="battle-step">
+                    <ng-container *ngIf="battleState?.currentBattleAction === 'player'">
+                        <span class="player-action">Player attacks!</span>
+                    </ng-container>
+                    <ng-container *ngIf="battleState?.currentBattleAction === 'enemy'">
+                        <span class="enemy-action">Enemy attacks!</span>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="battle-col enemy-col">
+                <div class="battle-label">{{ battleState?.battleEnemy?.name || 'Enemy' }}</div>
+                <div class="battle-hp-bar">
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill enemy" [style.width.%]="((battleState?.battleEnemyHP ?? 0) / (battleState?.battleEnemyMaxHP || 1)) * 100"></div>
+                    </div>
+                    <span class="hp-bar-text">{{ battleState?.battleEnemyHP ?? 0 }} / {{ battleState?.battleEnemyMaxHP ?? 0 }}</span>
+                    <span *ngIf="battleState?.currentBattleAction === 'player'" class="damage-number enemy-damage">-{{ battleState?.lastEnemyDamage }}<span *ngIf="battleState?.lastEnemyCrit"> CRIT!</span></span>
+                </div>
+                <div class="battle-stats-panel" *ngIf="battleState?.battleEnemy">
+                    <div>Level: {{ battleState?.battleEnemy?.level }}</div>
+                    <div>STR: {{ battleState?.battleEnemy?.strength }}</div>
+                    <div>DEX: {{ battleState?.battleEnemy?.dexterity }}</div>
+                    <div>INT: {{ battleState?.battleEnemy?.intelligence }}</div>
+                    <div>CON: {{ battleState?.battleEnemy?.constitution }}</div>
+                    <div>LUCK: {{ battleState?.battleEnemy?.luck }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="battle-outcome" *ngIf="!battleState?.battleActive && (battleState?.battleReplay?.length ?? 0) > 0">
+            <strong>{{ battleState?.battleOutcome }}</strong>
+        </div>
+    </div>
+
+    <!-- Debug Log Toggle and Display -->
+    <div *ngIf="battleLog.length > 0" class="debug-log-section">
+        <button (click)="toggleDebugLog()" class="debug-log-toggle">
+            {{ showDebugLog ? 'Hide Debug Log' : 'Show Debug Log' }}
+        </button>
+        <div *ngIf="showDebugLog" class="debug-log-box">
+            <pre>{{ battleLog.join('\n') }}</pre>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="loading-indicator">
+        Loading quests...
+    </div>
+
+    <!-- Active Quest View -->
+    <div *ngIf="activeQuests.length > 0 && !battleState?.battleActive && !showResultScreen" class="active-quest-view">
+        <div class="active-quest-card">
+            <div class="quest-header-info">
+                <h3>{{ activeQuests[0].name }}</h3>
+            </div>
+
+            <div class="quest-description">
+                {{ activeQuests[0].description }}
+            </div>
+
+            <div class="quest-progress">
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            [style.width.%]="getQuestProgressPercentage(activeQuests[0])">
+                        </div>
+                    </div>
+                    <span class="progress-text">{{ getTimeRemaining(activeQuests[0]) }}</span>
+                </div>
+            </div>
+
+            <div class="quest-rewards">
+                <div class="reward-item">
+                    <span class="reward-icon">⭐</span>
+                    <span class="reward-text">{{ activeQuests[0].experienceReward }} XP</span>
+                </div>
+                <div class="reward-item">
+                    <span class="reward-icon">💰</span>
+                    <span class="reward-text">{{ activeQuests[0].goldReward }} Gold</span>
+                </div>
+                <div class="reward-item" *ngIf="activeQuests[0]?.grantedItem">
+                    <app-item-card [item]="activeQuests[0].grantedItem"></app-item-card>
+                </div>
+            </div>
+
+            <div class="quest-actions">
+            <button
+                    *ngIf="isQuestCompleted(activeQuests[0])"
+                    class="complete-quest-button"
+                    (click)="completeQuest(activeQuests[0])"
+                    [disabled]="loading">
+                Complete Quest
+            </button>
+                <div *ngIf="!isQuestCompleted(activeQuests[0])" class="quest-in-progress">
+                    Quest in progress...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Quests Section -->
+    <div *ngIf="availableQuests.length > 0 && activeQuests.length === 0 && !battleState?.battleActive && !showResultScreen" class="available-quests-section">
+        <h3>📋 Available Quests (Level {{ currentPlayer?.level }})</h3>
+        <div class="quests-grid">
+            <div
+                *ngFor="let quest of availableQuests; let i = index"
+                class="quest-card"
+                [class.quest-unavailable]="currentPlayer && quest.requiredLevel > currentPlayer.level">
+
+                <div class="quest-card-header">
+                <h4>{{ quest.name }}</h4>
+            </div>
+
+                <div class="quest-card-body">
+            <p class="quest-description">{{ quest.description }}</p>
+
+                    <div class="quest-requirements">
+                        <span class="requirement">Level {{ quest.requiredLevel }}</span>
+                        <span class="requirement">{{ formatDuration(quest.duration) }}</span>
+                    </div>
+
+                    <div class="quest-rewards">
+                        <div class="reward">
+                            <span class="reward-icon">⭐</span>
+                            <span>{{ quest.experienceReward }} XP</span>
+                        </div>
+                        <div class="reward">
+                            <span class="reward-icon">💰</span>
+                            <span>{{ quest.goldReward }} Gold</span>
+                        </div>
+                        <div class="reward" *ngIf="quest.grantedItem">
+                            <app-item-card [item]="quest.grantedItem"></app-item-card>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest-card-footer">
+                    <button
+                        class="start-quest-button"
+                        (click)="startQuest(quest)"
+                        [disabled]="loading || !canStartQuest || (currentPlayer && quest.requiredLevel > currentPlayer.level)">
+                        <span *ngIf="currentPlayer && quest.requiredLevel > currentPlayer.level">Level Too Low</span>
+                        <span *ngIf="!(currentPlayer && quest.requiredLevel > currentPlayer.level)">Start Quest</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Quests Available -->
+    <div *ngIf="availableQuests.length === 0 && activeQuests.length === 0 && !loading" class="no-quests">
+        <p>No quests available at the moment. Check back later!</p>
+    </div>
+
+    <!-- Victory/Defeat Result Screen -->
+    <div *ngIf="showResultScreen" class="result-modal-overlay">
+        <div class="result-modal" [ngClass]="{'victory': lastQuestOutcome === 'victory', 'defeat': lastQuestOutcome === 'defeat'}">
+            <ng-container *ngIf="lastQuestOutcome === 'victory'; else defeatBlock">
+                <h2 class="result-title">Victory!</h2>
+                <div class="result-quest-name">Quest: {{ lastQuestName }}</div>
+                <div class="result-rewards">
+                    <div class="reward-item"><span class="reward-icon">⭐</span> {{ lastQuestXP }} XP</div>
+                    <div class="reward-item"><span class="reward-icon">💰</span> {{ lastQuestGold }} Gold</div>
+                    <div class="reward-item" *ngIf="activeQuests[0]?.grantedItem">
+                        <app-item-card [item]="activeQuests[0].grantedItem"></app-item-card>
+                    </div>
+                </div>
+                <button class="close-result-btn" (click)="closeResultScreen()">Continue</button>
+            </ng-container>
+            <ng-template #defeatBlock>
+                <h2 class="result-title defeat">Defeat</h2>
+                <div class="result-quest-name">Quest: {{ lastQuestName }}</div>
+                <div class="result-message">You were defeated in battle.<br>Better luck next time!</div>
+                <button class="close-result-btn" (click)="closeResultScreen()">Close</button>
+            </ng-template>
+        </div>
+    </div>
+</div>

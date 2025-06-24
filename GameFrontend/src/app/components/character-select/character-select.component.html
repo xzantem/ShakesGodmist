@@ -1,0 +1,49 @@
+<div class="character-select-container">
+    <div class="character-select-card">
+        <h2>Select Your Character</h2>
+
+        <div *ngIf="isLoading" class="loading">
+            Loading your characters...
+        </div>
+
+        <div *ngIf="error" class="error-message">{{ error }}</div>
+
+        <div *ngIf="!isLoading && !error" class="characters-list">
+            <div *ngIf="characters.length === 0" class="no-characters">
+                <p>You don't have any characters yet.</p>
+                <button (click)="createCharacter()" class="create-character-btn">
+                    Create Your First Character
+                </button>
+            </div>
+
+            <div *ngFor="let character of characters" class="character-card" (click)="selectCharacter(character)">
+                <div class="character-info">
+                    <h3>{{ character.name }}</h3>
+                    <div class="character-details">
+                        <span class="character-class">{{ getClassName(character.class) }}</span>
+                        <span class="character-level">Level {{ character.level }}</span>
+                    </div>
+                    <div class="character-stats">
+                        <span>💰 {{ character.gold }} Gold</span>
+                        <span>⭐ {{ character.experience }} XP</span>
+                    </div>
+                    <div class="last-active">
+                        Last active: {{ getLastActiveText(character.lastActive) }}
+                    </div>
+                </div>
+                <div class="select-indicator">
+                    <span>Click to play</span>
+                </div>
+            </div>
+
+            <div *ngIf="characters.length > 0" class="create-new-section">
+                <button (click)="createCharacter()" class="create-new-character-btn">
+                    Create New Character
+                </button>
+                <button (click)="logout()" class="logout-btn">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,57 @@
+﻿% ********** Rozdział 5 **********
+
+\chapter{Opis kluczowych elementów back-endu}
+
+W tej sekcji opisano najważniejsze elementy warstwy back-endowej projektu, ich odpowiedzialności oraz sposób działania.
+
+\begin{itemize}
+    \item \textbf{GameDbContext} -- Główny kontekst bazy danych, odpowiada za połączenie z bazą PostgreSQL oraz mapowanie encji (Player, Item, Quest, User, Enemy) na tabele w bazie. Umożliwia wykonywanie operacji CRUD na wszystkich obiektach domenowych. Konfiguracja relacji i kluczy obcych odbywa się w metodzie \texttt{OnModelCreating}. DbContext jest wykorzystywany przez wszystkie kontrolery do komunikacji z bazą danych.
+
+    \item \textbf{AuthController} -- Odpowiada za obsługę rejestracji, logowania i uwierzytelniania użytkowników. Główne metody:
+    \begin{itemize}
+        \item \texttt{Register} -- rejestracja nowego użytkownika, walidacja danych, wywołanie serwisu AuthService.
+        \item \texttt{Login} -- logowanie użytkownika, sprawdzenie poprawności hasła, generowanie tokenu JWT.
+        \item \texttt{GetCurrentUser} -- pobranie danych aktualnie zalogowanego użytkownika na podstawie tokenu.
+    \end{itemize}
+    Kontroler komunikuje się z serwisem AuthService i zwraca odpowiedzi HTTP.
+
+    \item \textbf{ItemsController} -- Zarządza operacjami na przedmiotach gracza. Główne metody:
+    \begin{itemize}
+        \item \texttt{GetItems} -- pobiera listę przedmiotów gracza.
+        \item \texttt{BuyItem} -- umożliwia zakup nowego przedmiotu przez gracza, sprawdza saldo i dostępność.
+        \item \texttt{SellItem} -- pozwala sprzedać przedmiot z ekwipunku gracza.
+        \item \texttt{EquipItem} -- przypisuje przedmiot do slotu ekwipunku gracza.
+    \end{itemize}
+    Każda metoda waliduje uprawnienia użytkownika i wykonuje operacje na bazie przez GameDbContext.
+
+    \item \textbf{PlayersController} -- Obsługuje operacje związane z graczem. Główne metody:
+    \begin{itemize}
+        \item \texttt{GetPlayer} -- pobiera profil i statystyki gracza.
+        \item \texttt{UpgradeStats} -- umożliwia ulepszanie statystyk gracza, sprawdza koszty i limity.
+        \item \texttt{GetInventory} -- pobiera ekwipunek gracza.
+        \item \texttt{UpdatePlayer} -- aktualizuje dane gracza (np. po walce lub misji).
+    \end{itemize}
+    Kontroler sprawdza uprawnienia, pobiera i aktualizuje dane gracza w bazie, wywołuje logikę biznesową.
+
+    \item \textbf{QuestsController} -- Odpowiada za generowanie, akceptowanie i kończenie misji. Główne metody:
+    \begin{itemize}
+        \item \texttt{GenerateQuests} -- generuje nowe propozycje misji na podstawie poziomu gracza.
+        \item \texttt{AcceptQuest} -- przypisuje wybraną misję do gracza, serializuje przeciwnika i nagrodę.
+        \item \texttt{CompleteQuest} -- kończy misję, przyznaje nagrody, aktualizuje postęp gracza.
+        \item \texttt{GetActiveQuests} -- pobiera aktualne misje gracza.
+    \end{itemize}
+    Kontroler waliduje dostępność misji, uprawnienia gracza i zapisuje postęp w bazie.
+
+    \item \textbf{AuthService} -- Serwis odpowiedzialny za logikę uwierzytelniania. Główne metody:
+    \begin{itemize}
+        \item \texttt{RegisterUser} -- tworzy nowego użytkownika, hashuje hasło, zapisuje w bazie.
+        \item \texttt{ValidateUser} -- sprawdza poprawność danych logowania.
+        \item \texttt{GenerateJwtToken} -- generuje token JWT dla zalogowanego użytkownika.
+    \end{itemize}
+    Oddziela logikę biznesową od kontrolera, zapewnia bezpieczeństwo i enkapsulację operacji na użytkownikach.
+
+    \item \textbf{Podział odpowiedzialności} -- Logika biznesowa (np. generowanie misji, walidacja, przetwarzanie nagród) znajduje się po stronie back-endu, natomiast kontrolery odpowiadają za obsługę żądań HTTP i komunikację z klientem. Dane są przechowywane w bazie PostgreSQL, a dostęp do nich realizowany jest przez Entity Framework Core. Każdy kontroler odpowiada za walidację uprawnień i poprawności danych wejściowych.
+\end{itemize}
+
+% ********** Koniec rozdziału **********
+
